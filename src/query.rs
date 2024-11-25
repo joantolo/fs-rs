@@ -1,8 +1,8 @@
 use crate::args::ParsedArgs;
-use crate::error::Result;
+use crate::error::{Result, Error};
 
 use std::ffi::OsStr;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 pub struct Query {
   pub from: PathBuf,
@@ -20,15 +20,20 @@ impl Query {
     })
   }
 
-  pub fn matches(&self, path: PathBuf) -> Option<String> {
-    self.match_name(&path)
-      .then(|| path.into_os_string().into_string().unwrap())
+  pub fn matches(&self, path: PathBuf) -> Result<String> {
+    self.match_name(&path)?;
+
+    Ok(path.into_os_string().into_string().unwrap())
   }
 
-  fn match_name(&self, path: &PathBuf) -> bool {
+  fn match_name(&self, path: &Path) -> Result<()> {
     match &self.name {
-      Some(name) => Some(OsStr::new(name)) == path.file_name(),
-      None => true,
+      Some(name) => if Some(OsStr::new(name)) == path.file_name() {
+        Ok(())
+      } else {
+        Err(Error::Other("Names don't match"))
+      }
+      None => Ok(())
     }
   }
 }

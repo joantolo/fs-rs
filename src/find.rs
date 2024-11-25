@@ -37,8 +37,9 @@ impl Finder {
         self.recursive_find_from(&path)?;
       }
 
-      self.query.matches(path)
-        .map(|matched| self.matched_files_insert(matched));
+      if let Ok(matched) = self.query.matches(path) {
+        self.matched_files_insert(matched);
+      }
 
       Ok(())
     })
