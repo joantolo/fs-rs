@@ -27,7 +27,7 @@ impl Finder {
   }
 
   fn recursive_find_from(&self, dir: &PathBuf) -> Result<()> {
-    let entries: Vec<PathBuf> = std::fs::read_dir(&dir)?
+    let entries: Vec<PathBuf> = std::fs::read_dir(dir)?
       .filter_map(|entry| entry.ok())
       .map(|e| e.path())
       .collect();
