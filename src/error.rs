@@ -18,6 +18,9 @@ pub enum Error {
 
   #[error("Error with Arc: {0}")]
   Arc(String),
+
+  #[error("Generic error: {0}")]
+  Other(&'static str),
 }
 
 impl From<std::io::Error> for Error {
